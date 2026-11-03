@@ -1,5 +1,5 @@
 /**
- * Self-check for the game maths. Run: npm run check
+ * Self-check for the game maths. Run: bun run check
  * Deliberately assert-based with no test framework — if these numbers drift,
  * the whole economy is wrong and the village lies.
  */
@@ -14,7 +14,7 @@ import {
   band,
   ownerDrainPerHour,
   average,
-} from "./game.ts";
+} from "./game";
 
 // Bounty stack: starts at ₹1, reaches the severity cap exactly at capHours.
 assert.equal(bountyStack("critical", 0), 1);

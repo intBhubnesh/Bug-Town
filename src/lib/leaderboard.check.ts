@@ -1,5 +1,5 @@
 /**
- * Self-check for ranking. Run: npm run check
+ * Self-check for ranking. Run: bun run check
  *
  * Ranking is the one number on the billboard everyone will check against their
  * own memory, and tie handling is where it goes wrong: off-by-one ranks, two
@@ -7,8 +7,8 @@
  * prerender and the browser's first paint.
  */
 import assert from "node:assert/strict";
-import { BOARDS, boardValue, podiumColor, rankDevelopers, type Board } from "./leaderboard.ts";
-import { DEVELOPERS, type Developer } from "./seed.ts";
+import { BOARDS, boardValue, podiumColor, rankDevelopers, type Board } from "./leaderboard";
+import { DEVELOPERS, type Developer } from "./seed";
 
 const dev = (name: string, performance: number, found = 0, xp = 0): Developer => ({
   id: name.toLowerCase(),

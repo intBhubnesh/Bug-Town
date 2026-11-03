@@ -1,5 +1,5 @@
 /**
- * Self-check for the generated ground. Run: npm run check
+ * Self-check for the generated ground. Run: bun run check
  *
  * Terrain is the one thing here that fails *silently and totally*: a flipped
  * triangle winding renders an invisible floor, a stray NaN deletes the whole
@@ -16,8 +16,8 @@ import {
   scatterNature,
   terrainColor,
   terrainHeight,
-} from "./terrain.ts";
-import { hash01 } from "./hex.ts";
+} from "./terrain";
+import { hash01 } from "./hex";
 
 /* ------------------------------- height ------------------------------- */
 

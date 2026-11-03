@@ -9,10 +9,11 @@ a **visualization layer on seeded data**, so the team can see what the game feel
 like before any reporting flow or Jira sync exists.
 
 ```bash
-npm run dev        # http://localhost:3000
-npm run check      # self-checks for the game maths and the seeded town
-npm run typecheck
-npm run build
+bun install
+bun run dev        # http://localhost:3000
+bun run check      # the six self-checks
+bun run typecheck
+bun run build
 ```
 
 ## Your character
@@ -213,7 +214,7 @@ exactly one burning module, at least one clean one, someone mid-fix, someone at
 low HP, and a live golden window. It caught a duplicate Jira key on its first
 run.
 
-**Run `npm run check` after touching the maths or the seed.**
+**Run `bun run check` after touching the maths or the seed.**
 
 ### Why the health spread is designed, not arbitrary
 
@@ -259,6 +260,32 @@ The packs are addressed *by node name* in both cases, and a name that doesn't
 exist renders nothing and logs nothing. `seed.check.ts` therefore parses the
 GLBs directly (`gltf-nodes.ts`, no 3D library) and asserts every gear name and
 every `handslot.r` bone really exists.
+
+### Running on Bun
+
+Everything runs on Bun: `bun run dev` and `bun run build` launch Next with
+`--bun`, so the Next.js dev server and build execute on the Bun runtime rather
+than Node. `bun.lock` is the lockfile; there is no `package-lock.json` and no
+npm step.
+
+Two consequences worth knowing:
+
+- **Cache Components is off** in `next.config.ts`. Next warns it cannot
+  guarantee that feature on a non-Node runtime because of how `setTimeout` is
+  implemented. This app has nothing for it to cache — the whole page is a client
+  component with no server data fetching — so turning it off removes a real
+  warning at zero cost. Revisit it if the app ever needs server-side caching.
+- **The checks run as `bun src/lib/*.check.ts`** with no flags. Bun executes
+  TypeScript directly, so the `node --experimental-strip-types` invocation is
+  gone, and with it the `.ts` import extensions and the
+  `allowImportingTsExtensions` compiler option that only existed to satisfy it.
+
+The checks still `import assert from "node:assert/strict"`. That is not a
+dependency on Node being installed — `node:` is the standard module namespace
+and Bun implements it natively. It stays because Bun has no equivalent that
+keeps an assertion *message*, and those messages are what make a failing check
+explain itself. Moving to `bun test` would trade them for test names; worth
+doing, but as its own change.
 
 ### One ranking, two places
 

@@ -1,5 +1,5 @@
 /**
- * Self-check for the module interiors. Run: npm run check
+ * Self-check for the module interiors. Run: bun run check
  *
  * A floor plan fails quietly in specific ways: two rooms overlapping looks
  * like one odd room, a bug placed outside its walls looks like it belongs to
@@ -18,9 +18,9 @@ import {
   planInterior,
   type Bounds,
   type InteriorFeature,
-} from "./interior.ts";
-import { buildTown } from "./seed.ts";
-import { hash01 } from "./hex.ts";
+} from "./interior";
+import { buildTown } from "./seed";
+import { hash01 } from "./hex";
 
 const inside = (p: [number, number, number], b: Bounds) =>
   p[0] >= b.xMin && p[0] <= b.xMax && p[2] >= b.zMin && p[2] <= b.zMax;

@@ -12,7 +12,7 @@
  * would bury that answer behind a Suspense boundary where nothing else can
  * reach it.
  */
-import type { ModuleKind } from "./seed.ts";
+import type { ModuleKind } from "./seed";
 
 export const FOOTPRINT: Record<ModuleKind | "ruin" | "scaffolding" | "townHall", number> = {
   building_market: 1.799,

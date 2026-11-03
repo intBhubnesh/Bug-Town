@@ -13,7 +13,7 @@
  * tall where a village house is 1.3, so characters are rendered here at close
  * to their native ~2.2 rather than the 0.85 they use outside.
  */
-import type { Severity } from "./game.ts";
+import type { Severity } from "./game";
 
 export const TILE = 4;
 /** Top face of `floor_tile_large`. Everything indoors stands on this. */

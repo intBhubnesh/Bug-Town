@@ -1,5 +1,5 @@
 /**
- * Self-check for the city wall. Run: npm run check
+ * Self-check for the city wall. Run: bun run check
  *
  * A ring wall built from fixed-length pieces either closes exactly or it
  * doesn't, and "doesn't" shows up as gaps you can see through or segments
@@ -14,11 +14,11 @@ import {
   WALL_INRADIUS,
   WALL_RADIUS,
   buildCityWall,
-} from "./citywall.ts";
-import { CLEARING_RADIUS, PATH_RADIUS, terrainHeight } from "./terrain.ts";
-import { cellToWorld } from "./hex.ts";
-import { MODULES } from "./seed.ts";
-import { BILLBOARD, BILLBOARD_TOTAL, MEDIAN_BUILDING } from "./buildings.ts";
+} from "./citywall";
+import { CLEARING_RADIUS, PATH_RADIUS, terrainHeight } from "./terrain";
+import { cellToWorld } from "./hex";
+import { MODULES } from "./seed";
+import { BILLBOARD, BILLBOARD_TOTAL, MEDIAN_BUILDING } from "./buildings";
 
 /** Kept in step with VILLAGER_HEIGHT in components/Villager.tsx. */
 const VILLAGER_HEIGHT = 0.85;

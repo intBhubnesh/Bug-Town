@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ROLES, type CharacterModel, type RoleId } from "./roles.ts";
+import { ROLES, type CharacterModel, type RoleId } from "./roles";
 
 /**
  * Who you are in the village.

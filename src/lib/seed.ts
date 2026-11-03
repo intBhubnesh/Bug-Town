@@ -11,8 +11,8 @@
  * it burns), Payments / Appointments / Prescriptions sit in the warning band,
  * and Reports is spotless.
  */
-import { SEVERITY, average, type Severity } from "./game.ts";
-import type { CharacterModel } from "./roles.ts";
+import { SEVERITY, average, type Severity } from "./game";
+import type { CharacterModel } from "./roles";
 
 export type DeveloperId = string;
 

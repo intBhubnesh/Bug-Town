@@ -2,7 +2,7 @@
  * Ranking. One place, so the billboard in the square and the panel in the HUD
  * can never disagree about who is winning.
  */
-import type { Developer } from "./seed.ts";
+import type { Developer } from "./seed";
 
 export type Board = "performance" | "finders" | "xp";
 

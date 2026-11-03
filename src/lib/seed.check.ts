@@ -1,5 +1,5 @@
 /**
- * Self-check for the seeded town. Run: npm run check
+ * Self-check for the seeded town. Run: bun run check
  *
  * Two jobs. First, referential integrity — a bug pointing at a feature that
  * doesn't exist just vanishes from the village with no error. Second, the
@@ -7,14 +7,13 @@
  * and it is easy to flatten by accident just by adding bugs.
  */
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
-import { BAND_VARIANT, band } from "./game.ts";
-import { CHARACTER_ATTACK, CHARACTER_GEAR, CHARACTERS, ROLES } from "./roles.ts";
-import { FOOTPRINT } from "./buildings.ts";
-import { gltfClipNames, gltfFootprint, gltfNodeNames } from "./gltf-nodes.ts";
-import { CLEARING_RADIUS, NATURE_KINDS, PATH_RADIUS, terrainHeight } from "./terrain.ts";
-import { PROPS } from "./interior.ts";
-import { cellToWorld } from "./hex.ts";
+import { BAND_VARIANT, band } from "./game";
+import { CHARACTER_ATTACK, CHARACTER_GEAR, CHARACTERS, ROLES } from "./roles";
+import { FOOTPRINT } from "./buildings";
+import { gltfClipNames, gltfFootprint, gltfNodeNames } from "./gltf-nodes";
+import { CLEARING_RADIUS, NATURE_KINDS, PATH_RADIUS, terrainHeight } from "./terrain";
+import { PROPS } from "./interior";
+import { cellToWorld } from "./hex";
 import {
   BUGS,
   BURNING_HEALTH,
@@ -22,7 +21,7 @@ import {
   FEATURES,
   MODULES,
   buildTown,
-} from "./seed.ts";
+} from "./seed";
 
 const PUBLIC = new URL("../../public", import.meta.url).pathname;
 const town = buildTown();
@@ -95,9 +94,8 @@ for (const m of MODULES) {
 /* A wrong path renders nothing and logs nothing, so check it here. */
 
 const missing: string[] = [];
-const need = (p: string) => {
-  if (!existsSync(`${PUBLIC}${p}`)) missing.push(p);
-};
+const wanted: string[] = [];
+const need = (p: string) => wanted.push(p);
 
 for (const m of MODULES) {
   // Health moves between bands at runtime, so all three variants must exist.
@@ -136,6 +134,9 @@ for (const piece of [
 }
 // Every nature model the forest can place.
 for (const kind of NATURE_KINDS) need(`/assets/hex/decoration/nature/${kind}.gltf`);
+for (const p of wanted) {
+  if (!(await Bun.file(`${PUBLIC}${p}`).exists())) missing.push(p);
+}
 assert.deepEqual(missing, [], `missing asset files:\n  ${missing.join("\n  ")}`);
 
 /* ---------------------- gear names inside the GLBs -------------------- */
@@ -143,7 +144,7 @@ assert.deepEqual(missing, [], `missing asset files:\n  ${missing.join("\n  ")}`)
    exact failure that left every character empty-handed in the first place. */
 
 for (const c of CHARACTERS) {
-  const nodes = gltfNodeNames(`${PUBLIC}/assets/characters/${c.id}.glb`);
+  const nodes = await gltfNodeNames(`${PUBLIC}/assets/characters/${c.id}.glb`);
   const gear = CHARACTER_GEAR[c.id];
   assert.ok(gear.length > 0, `${c.id} carries nothing — the pack has weapons for every character`);
   for (const name of gear) {
@@ -153,7 +154,7 @@ for (const c of CHARACTERS) {
 
 // The skeletons' weapons bolt onto a socket bone, so that bone has to be there.
 for (const model of SKELETONS) {
-  const nodes = gltfNodeNames(`${PUBLIC}/assets/skeletons/${model}.glb`);
+  const nodes = await gltfNodeNames(`${PUBLIC}/assets/skeletons/${model}.glb`);
   assert.ok(nodes.has("handslot.r"), `${model} has no handslot.r bone to hold a weapon`);
 }
 
@@ -162,7 +163,7 @@ for (const model of SKELETONS) {
    number puts the skeletons somewhere other than where the villagers walk. */
 
 for (const m of MODULES) {
-  const measured = gltfFootprint(`${PUBLIC}/assets/hex/buildings/green/${m.kind}_green.gltf`);
+  const measured = await gltfFootprint(`${PUBLIC}/assets/hex/buildings/green/${m.kind}_green.gltf`);
   assert.ok(
     Math.abs(FOOTPRINT[m.kind] - measured) < 0.002,
     `FOOTPRINT.${m.kind} is ${FOOTPRINT[m.kind]} but the asset measures ${measured.toFixed(3)}`,
@@ -173,7 +174,7 @@ for (const [key, path] of [
   ["scaffolding", "/assets/hex/buildings/neutral/building_scaffolding.gltf"],
   ["townHall", "/assets/hex/buildings/blue/building_castle_blue.gltf"],
 ] as const) {
-  const measured = gltfFootprint(`${PUBLIC}${path}`);
+  const measured = await gltfFootprint(`${PUBLIC}${path}`);
   assert.ok(
     Math.abs(FOOTPRINT[key] - measured) < 0.002,
     `FOOTPRINT.${key} is ${FOOTPRINT[key]} but the asset measures ${measured.toFixed(3)}`,
@@ -183,7 +184,7 @@ for (const [key, path] of [
 /* ------------------------ attack clips exist -------------------------- */
 
 for (const c of CHARACTERS) {
-  const clips = gltfClipNames(`${PUBLIC}/assets/characters/${c.id}.glb`);
+  const clips = await gltfClipNames(`${PUBLIC}/assets/characters/${c.id}.glb`);
   const attack = CHARACTER_ATTACK[c.id];
   assert.ok(
     clips.has(attack.clip),
@@ -204,7 +205,7 @@ assert.ok(
 );
 
 for (const model of SKELETONS) {
-  const clips = gltfClipNames(`${PUBLIC}/assets/skeletons/${model}.glb`);
+  const clips = await gltfClipNames(`${PUBLIC}/assets/skeletons/${model}.glb`);
   for (const name of ["2H_Melee_Attack_Chop", "1H_Melee_Attack_Slice_Diagonal",
                       "1H_Melee_Attack_Stab", "Unarmed_Melee_Attack_Punch_A"]) {
     assert.ok(clips.has(name), `${model} is missing the "${name}" clip`);
